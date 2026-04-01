@@ -48,10 +48,10 @@ struct awdl_chan {
 };
 
 #ifdef __cplusplus
-#define CHAN_NULL (struct awdl_chan){{{0, 0x00}}}
-#define CHAN_OPCLASS_6 (struct awdl_chan){{{6, 0x51}}}
-#define CHAN_OPCLASS_44 (struct awdl_chan){{{44, 0x80}}}
-#define CHAN_OPCLASS_149 (struct awdl_chan){{{149, 0x80}}}
+#define CHAN_NULL awdl_chan{{{0, 0x00}}}
+#define CHAN_OPCLASS_6 awdl_chan{{{6, 0x51}}}
+#define CHAN_OPCLASS_44 awdl_chan{{{44, 0x80}}}
+#define CHAN_OPCLASS_149 awdl_chan{{{149, 0x80}}}
 #else
 #define CHAN_NULL (struct awdl_chan){ { { 0, 0x00 } } }
 #define CHAN_OPCLASS_6 (struct awdl_chan){ { { 6, 0x51 } } }
