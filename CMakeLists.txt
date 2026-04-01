@@ -23,6 +23,10 @@ endif ()
 
 option(OWL_BUILD_TESTS "Build unit tests" ON)
 if (OWL_BUILD_TESTS)
+    if (WIN32)
+        # Keep gtest CRT selection aligned with the default /MD runtime of this project on MSVC.
+        set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    endif ()
     enable_language(CXX)
     option(INSTALL_GTEST "" OFF)
     add_subdirectory(googletest)
