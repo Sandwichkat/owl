@@ -38,7 +38,7 @@ struct awdl_data {
 	uint16_t seq;
 	uint16_t pad; /* AWDL_DATA_PAD */
 	uint16_t ethertype;
-} __attribute__((__packed__));
+} AWDL_PACKED;
 
 struct awdl_action {
 	uint8_t category; /* 127 - vendor-specific */
@@ -49,7 +49,7 @@ struct awdl_action {
 	uint8_t reserved;
 	uint32_t phy_tx;
 	uint32_t target_tx;
-} __attribute__((__packed__));
+} AWDL_PACKED;
 
 enum awdl_action_type {
 	AWDL_ACTION_PSF = 0,
@@ -88,7 +88,7 @@ enum awdl_tlvs {
 struct tl {
 	uint8_t type;
 	uint16_t length;
-} __attribute__((__packed__));
+} AWDL_PACKED;
 
 struct awdl_chanseq {
 	uint8_t count;
@@ -96,7 +96,7 @@ struct awdl_chanseq {
 	uint8_t duplicate_count;
 	uint8_t step_count;
 	uint16_t fill_channel;
-} __attribute__((__packed__));
+} AWDL_PACKED;
 
 
 struct awdl_sync_params_tlv {
@@ -123,14 +123,14 @@ struct awdl_sync_params_tlv {
 	uint16_t ap_alignment;
 	/* struct awdl_chanseq chanseq; */
 	/* uint8_t pad[2]; */
-} __attribute__((__packed__));
+} AWDL_PACKED;
 
 struct awdl_chanseq_tlv {
 	uint8_t type;
 	uint16_t length;
 	/* struct awdl_chanseq chanseq; */
 	/* uint8_t pad[3]; */
-} __attribute__((__packed__));
+} AWDL_PACKED;
 
 /* AWDL election parameters */
 struct awdl_election_params_tlv {
@@ -144,7 +144,7 @@ struct awdl_election_params_tlv {
 	uint32_t top_master_metric;
 	uint32_t self_metric;
 	uint8_t pad[2];
-} __attribute__((__packed__));
+} AWDL_PACKED;
 
 struct awdl_election_params_v2_tlv {
 	uint8_t type;
@@ -158,13 +158,13 @@ struct awdl_election_params_v2_tlv {
 	uint32_t unknown; /* 0 */
 	uint32_t reserved; /* 0 */
 	uint32_t self_counter; /* is incremented by 1 while node is selected as master every PI (3.14) seconds */
-} __attribute__((__packed__));
+} AWDL_PACKED;
 
 struct awdl_sync_tree_tlv {
 	uint8_t type;
 	uint16_t length;
 	struct ether_addr tree[1];
-} __attribute__((__packed__));
+} AWDL_PACKED;
 
 struct awdl_service_params_tlv {
 	uint8_t type;
@@ -172,7 +172,7 @@ struct awdl_service_params_tlv {
 	unsigned char unknown[3];
 	uint16_t sui;
 	uint32_t bitmask;
-} __attribute__((__packed__));
+} AWDL_PACKED;
 
 struct awdl_ht_capabilities_tlv {
 	uint8_t type;
@@ -182,7 +182,7 @@ struct awdl_ht_capabilities_tlv {
 	uint8_t ampdu_params;
 	uint8_t rx_mcs;
 	uint16_t unknown2;
-} __attribute__((__packed__));
+} AWDL_PACKED;
 
 enum awdl_data_path_state_flags {
 	AWDL_DATA_PATH_FLAG_COUNTRY_CODE = 0x0100,
@@ -203,7 +203,7 @@ struct awdl_data_path_state_tlv {
 	struct ether_addr awdl_addr;
 	uint16_t ext_flags;
 	/* uint32_t logtrigger_id; if (ext_flags | 0x4) */
-} __attribute__((__packed__));
+} AWDL_PACKED;
 
 struct awdl_arpa_tlv {
 	uint8_t type;
@@ -214,14 +214,14 @@ struct awdl_arpa_tlv {
 	uint8_t name_length;
 	char name[1];
 	/* uint16_t suffix */
-} __attribute__((__packed__));
+} AWDL_PACKED;
 
 struct awdl_version_tlv {
 	uint8_t type;
 	uint16_t length;
 	uint8_t version;
 	uint8_t devclass;
-} __attribute__((__packed__));
+} AWDL_PACKED;
 
 const char *awdl_tlv_as_str(uint8_t type);
 

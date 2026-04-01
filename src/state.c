@@ -19,6 +19,9 @@
 
 #include <time.h>
 #include <string.h>
+#if defined(_WIN32)
+#include <windows.h>
+#endif
 
 #include "version.h"
 #include "state.h"
@@ -93,6 +96,16 @@ unsigned int ieee80211_state_next_sequence_number(struct ieee80211_state *state)
 };
 
 uint64_t clock_time_us() {
+#if defined(_WIN32)
+	static LARGE_INTEGER freq;
+	LARGE_INTEGER ticks;
+	if (!freq.QuadPart) {
+		QueryPerformanceFrequency(&freq);
+	}
+	if (!QueryPerformanceCounter(&ticks) || !freq.QuadPart)
+		return 0;
+	return (uint64_t) ((ticks.QuadPart * 1000000ULL) / (uint64_t) freq.QuadPart);
+#else
 	int result;
 	struct timespec now;
 	uint64_t now_us = 0;
@@ -104,4 +117,5 @@ uint64_t clock_time_us() {
 		now_us += now.tv_nsec / 1000;
 	}
 	return now_us;
+#endif
 }

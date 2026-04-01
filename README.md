@@ -3,6 +3,7 @@
 [![Language grade](https://img.shields.io/lgtm/grade/cpp/g/seemoo-lab/owl.svg?logo=lgtm&label=code%20quality)](https://lgtm.com/projects/g/seemoo-lab/owl/context:cpp)
 
 *Open Wireless Link (OWL)* is an open implementation of the Apple Wireless Direct Link (AWDL) ad hoc protocol for Linux and macOS written in C and part of the [Open Wireless Link project](https://owlink.org).
+The core AWDL library and unit tests are now also buildable on Windows.
 
 OWL runs in user space and makes use of Linux’s Netlink API for Wi-Fi specific operations such as channel switching and to integrate itself in the Linux networking stack by providing a virtual network interface such that existing IPv6-capable programs can use AWDL without modification.
 
@@ -20,6 +21,8 @@ OWL is not affiliated with or endorsed by Apple Inc. Use this code at your own r
 **Wi-Fi card with *active* monitor mode.** To use OWL, you will need a Wi-Fi card supporting active monitor mode with frame injection. We recommend the Atheros AR9280 chip (IEEE 802.11n) which we used to develop and test this code. Configurations that do not support *active* monitor mode, i.e., ACK received frames, might suffer from throughput degradation because the sender will re-transmit each frame up to 7 times as per the IEEE 802.11 standard. Have a look at [issue #9](https://github.com/seemoo-lab/owl/issues/9) if you want to find out whether your card meets the requirements.
 
 **No support for virtual machines and WSL.** OWL requires direct access to the Wi-Fi card which means that virtualized environments (except with USB or PCIe passthrough) and Windows Subsystem for Linux (WSL, see [issue #8](https://github.com/seemoo-lab/owl/issues/8)), are *not supported*.
+
+**Windows support scope.** On Windows, the portable AWDL core (`src/`) and tests (`tests/`) are supported. The `owl` daemon binary (`daemon/`) relies on Linux/macOS Wi-Fi stack integration and is therefore disabled on Windows builds.
 
 
 OWL requires `libpcap` for frame injection and reception, `libev` for event handling, and `libnl` (Linux only) for interactions with the system's networking stack which have to be installed on the target system.

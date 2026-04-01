@@ -2,14 +2,7 @@
 #define IEEE80211_H_
 
 #include <stdint.h>
-
-#ifdef __APPLE__
-
-#include <net/ethernet.h>
-
-#else
-#include <netinet/ether.h>
-#endif
+#include "compat.h"
 
 /* Some relevant Ethernet Protocol IDs */
 #define ETH_P_IP	0x0800		/* Internet Protocol packet	*/
@@ -19,7 +12,7 @@
 
 struct oui {
 	uint8_t byte[OUI_LEN];
-} __attribute__((__packed__));
+} AWDL_PACKED;
 
 #define FCS_LEN 4
 
@@ -143,7 +136,7 @@ struct ieee80211_hdr {
 	struct ether_addr addr2; /* src */
 	struct ether_addr addr3; /* bssid */
 	uint16_t seq_ctrl;
-} __attribute__((__packed__));
+} AWDL_PACKED;
 
 struct llc_hdr {
 	uint8_t dsap;
@@ -152,7 +145,7 @@ struct llc_hdr {
 	/* SNAP extension */
 	struct oui oui;
 	uint16_t pid;
-} __attribute__((__packed__));
+} AWDL_PACKED;
 
 /**
  * ieee80211_tu_to_usec - convert time units (TU) to microseconds

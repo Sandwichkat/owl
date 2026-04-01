@@ -21,7 +21,7 @@
 #define AWDL_PEERS_H
 
 #include <stdint.h>
-#include <net/ethernet.h>
+#include "compat.h"
 
 #include "election.h"
 #include "channel.h"
