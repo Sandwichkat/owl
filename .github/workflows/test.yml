@@ -24,3 +24,13 @@ jobs:
     - name: Run tests (Windows)
       shell: pwsh
       run: ./build/tests/Release/tests.exe
+    - name: Upload build artifacts (Windows)
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-build-${{ github.sha }}
+        if-no-files-found: warn
+        path: |
+          build/tests/Release/tests.exe
+          build/src/Release/*.lib
+          build/src/Release/*.dll
