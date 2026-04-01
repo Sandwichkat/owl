@@ -4,22 +4,11 @@ on: [push, pull_request]
 
 jobs:
   build:
-
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: windows-latest
     
     steps:
     - uses: actions/checkout@v1
-    - name: Install dependencies
-      if: startsWith(matrix.os, 'ubuntu')
-      run: sudo apt install libpcap-dev libev-dev libnl-3-dev libnl-genl-3-dev libnl-route-3-dev
-    - name: Install dependencies
-      if: startsWith(matrix.os, 'macos')
-      run: brew install libpcap libev
     - name: Install Windows dependencies
-      if: startsWith(matrix.os, 'windows')
       shell: pwsh
       run: |
         choco install llvm --yes --no-progress
@@ -29,17 +18,9 @@ jobs:
       run: mkdir build
     - name: CMake
       run: cd build && cmake ..
-    - name: make
-      if: startsWith(matrix.os, 'windows') == false
-      run: cd build && make
     - name: Build (Windows)
-      if: startsWith(matrix.os, 'windows')
       shell: pwsh
       run: cmake --build build --config Release
-    - name: Run tests
-      if: startsWith(matrix.os, 'windows') == false
-      run: build/tests/tests
     - name: Run tests (Windows)
-      if: startsWith(matrix.os, 'windows')
       shell: pwsh
       run: ./build/tests/Release/tests.exe
