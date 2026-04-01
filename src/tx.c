@@ -20,7 +20,20 @@
 #include <stdint.h>
 #include <string.h>
 
+#include "compat.h"
+
+#if defined(_WIN32)
+struct ieee80211_radiotap_header {
+	uint8_t it_version;
+	uint8_t it_pad;
+	uint16_t it_len;
+	uint32_t it_present;
+} AWDL_PACKED;
+
+#define IEEE80211_RADIOTAP_RATE 2
+#else
 #include <radiotap.h>
+#endif
 
 #include "tx.h"
 #include "sync.h"
@@ -205,7 +218,7 @@ int awdl_init_election_params_v2_tlv(uint8_t *buf, const struct awdl_state *stat
 	return sizeof(struct awdl_election_params_v2_tlv);
 }
 
-int awdl_init_service_params_tlv(uint8_t *buf, const struct awdl_state *state __attribute__((unused))) {
+int awdl_init_service_params_tlv(uint8_t *buf, const struct awdl_state *state AWDL_UNUSED) {
 	struct awdl_service_params_tlv *tlv = (struct awdl_service_params_tlv *) buf;
 
 	tlv->type = AWDL_SERVICE_PARAMETERS_TLV;
@@ -223,7 +236,7 @@ int awdl_init_service_params_tlv(uint8_t *buf, const struct awdl_state *state __
 	return sizeof(struct awdl_service_params_tlv);
 }
 
-int awdl_init_ht_capabilities_tlv(uint8_t *buf, const struct awdl_state *state __attribute__((unused))) {
+int awdl_init_ht_capabilities_tlv(uint8_t *buf, const struct awdl_state *state AWDL_UNUSED) {
 	struct awdl_ht_capabilities_tlv *tlv = (struct awdl_ht_capabilities_tlv *) buf;
 
 	tlv->type = AWDL_ENHANCED_DATA_RATE_CAPABILITIES_TLV;

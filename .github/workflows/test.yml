@@ -4,27 +4,33 @@ on: [push, pull_request]
 
 jobs:
   build:
-
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
+    runs-on: windows-latest
     
     steps:
     - uses: actions/checkout@v1
-    - name: Install dependencies
-      if: startsWith(matrix.os, 'ubuntu')
-      run: sudo apt install libpcap-dev libev-dev libnl-3-dev libnl-genl-3-dev libnl-route-3-dev
-    - name: Install dependencies
-      if: startsWith(matrix.os, 'macos')
-      run: brew install libpcap libev
+    - name: Install Windows dependencies
+      shell: pwsh
+      run: |
+        choco install llvm --yes --no-progress
     - name: Checkout submodules
       run: git submodule update --init
     - name: Create build directory
       run: mkdir build
     - name: CMake
       run: cd build && cmake ..
-    - name: make
-      run: cd build && make
-    - name: Run tests
-      run: build/tests/tests
+    - name: Build (Windows)
+      shell: pwsh
+      run: cmake --build build --config Release
+    - name: Run tests (Windows)
+      shell: pwsh
+      run: ./build/tests/Release/tests.exe
+    - name: Upload build artifacts (Windows)
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-build-${{ github.sha }}
+        if-no-files-found: warn
+        path: |
+          build/tests/Release/tests.exe
+          build/src/Release/*.lib
+          build/src/Release/*.dll

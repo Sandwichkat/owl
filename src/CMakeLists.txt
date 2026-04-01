@@ -1,6 +1,7 @@
 add_library(awdl "")
 
 target_sources(awdl PRIVATE
+        compat.c
         log.c
         log.h
         state.c
@@ -35,6 +36,7 @@ target_sources(awdl PRIVATE
         circular_buffer.h
 )
 
-target_include_directories(awdl PRIVATE ${CMAKE_SOURCE_DIR}/radiotap)
-
-target_link_libraries(awdl radiotap)
+if (NOT WIN32)
+    target_include_directories(awdl PRIVATE ${CMAKE_SOURCE_DIR}/radiotap)
+    target_link_libraries(awdl radiotap)
+endif ()

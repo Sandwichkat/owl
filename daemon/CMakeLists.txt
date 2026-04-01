@@ -1,3 +1,7 @@
+if (WIN32)
+    message(FATAL_ERROR "daemon target is not supported on Windows")
+endif ()
+
 set(CMAKE_CXX_STANDARD 11)
 
 set(SOURCES PRIVATE

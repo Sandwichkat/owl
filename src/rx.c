@@ -19,10 +19,11 @@
 
 #include <string.h>
 #include <errno.h>
-#include <netinet/in.h>
-#include <netinet/ip6.h>
+#if !defined(_WIN32)
+#include <stdint.h>
 #include <radiotap.h>
 #include <radiotap_iter.h>
+#endif
 
 #include "rx.h"
 #include "sync.h"
@@ -58,7 +59,7 @@ wire_error:
 }
 
 int awdl_handle_chanseq_tlv(struct awdl_peer *src, const struct buf *val,
-                            struct awdl_state *state __attribute__((unused))) {
+                            struct awdl_state *state AWDL_UNUSED) {
 	uint8_t count;
 	uint8_t encoding;
 	uint8_t duplicate_count;
@@ -109,7 +110,7 @@ wire_error:
 }
 
 int awdl_handle_election_params_tlv(struct awdl_peer *src, const struct buf *val,
-                                    struct awdl_state *state __attribute__((unused))) {
+                                    struct awdl_state *state AWDL_UNUSED) {
 	uint8_t distance_to_master;
 
 	if (src->supports_v2)
@@ -131,7 +132,7 @@ wire_error:
 }
 
 int awdl_handle_election_params_v2_tlv(struct awdl_peer *src, const struct buf *val,
-                                       struct awdl_state *state __attribute__((unused))) {
+                                       struct awdl_state *state AWDL_UNUSED) {
 	READ_LE32(val, 16, &src->election.height);
 	READ_ETHER_ADDR(val, 0, &src->election.master_addr);
 	READ_ETHER_ADDR(val, 6, &src->election.sync_addr);
@@ -149,7 +150,7 @@ wire_error:
 }
 
 int awdl_handle_arpa_tlv(struct awdl_peer *src, const struct buf *val,
-                         struct awdl_state *state __attribute__((unused))) {
+                         struct awdl_state *state AWDL_UNUSED) {
 	// READ_U8(val, 0, &flags); /* semantics unclear, ignore */
 	READ_INT_STRING(val, 1, src->name, HOST_NAME_LENGTH_MAX);
 	return RX_OK;
@@ -158,7 +159,7 @@ wire_error:
 }
 
 int awdl_handle_data_path_state_tlv(struct awdl_peer *src, const struct buf *val,
-                                    struct awdl_state *state __attribute__((unused))) {
+                                    struct awdl_state *state AWDL_UNUSED) {
 	uint16_t flags;
 	int offset = 0;
 	READ_LE16(val, offset, &flags);
@@ -194,7 +195,7 @@ wire_error:
 }
 
 int awdl_handle_version_tlv(struct awdl_peer *src, const struct buf *val,
-                            struct awdl_state *state __attribute__((unused))) {
+                            struct awdl_state *state AWDL_UNUSED) {
 	uint8_t version, devclass;
 	READ_U8(val, 0, &version);
 	READ_U8(val, 1, &devclass);
@@ -388,8 +389,8 @@ int awdl_rx_data(const struct buf *frame, struct buf ***out, const struct ether_
 	return RX_OK;
 }
 
-int awdl_rx_data_amsdu(const struct buf *frame, struct buf ***out, const struct ether_addr *src __attribute__((unused)),
-                       const struct ether_addr *dst __attribute__((unused)), struct awdl_state *state) {
+int awdl_rx_data_amsdu(const struct buf *frame, struct buf ***out, const struct ether_addr *src AWDL_UNUSED,
+                       const struct ether_addr *dst AWDL_UNUSED, struct awdl_state *state) {
 	/* Iterate over all subframes */
 	while (buf_len(frame) > 0) {
 		struct ether_addr src_a, dst_a;
@@ -418,6 +419,15 @@ wire_error:
 }
 
 static int radiotap_parse(const struct buf *frame, signed char *rssi, uint8_t *flags, uint64_t *tsft) {
+#if defined(_WIN32)
+	(void) frame;
+	(void) tsft;
+	if (rssi)
+		*rssi = 0;
+	if (flags)
+		*flags = 0;
+	return RX_OK;
+#else
 	struct ieee80211_radiotap_iterator iter;
 	int err;
 
@@ -451,8 +461,10 @@ static int radiotap_parse(const struct buf *frame, signed char *rssi, uint8_t *f
 		return RX_UNEXPECTED_FORMAT;
 
 	return RX_OK;
+#endif
 }
 
+#if !defined(_WIN32)
 static int check_fcs(const struct buf *frame, uint8_t radiotap_flags) {
 	if (radiotap_flags & IEEE80211_RADIOTAP_F_BADFCS)
 		return -1;
@@ -462,8 +474,15 @@ static int check_fcs(const struct buf *frame, uint8_t radiotap_flags) {
 wire_error:
 	return -1;
 }
+#endif
 
 int awdl_rx(const struct buf *frame, struct buf ***data_frame, struct awdl_state *state) {
+#if defined(_WIN32)
+	(void) frame;
+	(void) data_frame;
+	(void) state;
+	return RX_UNEXPECTED_FORMAT;
+#else
 	const struct ieee80211_hdr *ieee80211;
 	const struct ether_addr *from, *to;
 	uint16_t fc, qosc; /* frame and QoS control */
@@ -514,4 +533,5 @@ int awdl_rx(const struct buf *frame, struct buf ***data_frame, struct awdl_state
 	}
 wire_error:
 	return RX_TOO_SHORT;
+#endif
 }
