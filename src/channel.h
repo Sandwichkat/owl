@@ -47,10 +47,17 @@ struct awdl_chan {
 	};
 };
 
-#define CHAN_NULL (struct awdl_chan) { { { 0, 0x00 } } }
-#define CHAN_OPCLASS_6 (struct awdl_chan) { { { 6, 0x51 } } }
-#define CHAN_OPCLASS_44 (struct awdl_chan) { { { 44, 0x80 } } }
-#define CHAN_OPCLASS_149 (struct awdl_chan) { { { 149, 0x80 } } }
+#ifdef __cplusplus
+#define CHAN_NULL (struct awdl_chan){{{0, 0x00}}}
+#define CHAN_OPCLASS_6 (struct awdl_chan){{{6, 0x51}}}
+#define CHAN_OPCLASS_44 (struct awdl_chan){{{44, 0x80}}}
+#define CHAN_OPCLASS_149 (struct awdl_chan){{{149, 0x80}}}
+#else
+#define CHAN_NULL (struct awdl_chan){ { { 0, 0x00 } } }
+#define CHAN_OPCLASS_6 (struct awdl_chan){ { { 6, 0x51 } } }
+#define CHAN_OPCLASS_44 (struct awdl_chan){ { { 44, 0x80 } } }
+#define CHAN_OPCLASS_149 (struct awdl_chan){ { { 149, 0x80 } } }
+#endif
 
 uint8_t awdl_chan_num(struct awdl_chan chan, enum awdl_chan_encoding);
 
