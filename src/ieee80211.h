@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include "compat.h"
 
+AWDL_PACK_PUSH
+
 /* Some relevant Ethernet Protocol IDs */
 #define ETH_P_IP	0x0800		/* Internet Protocol packet	*/
 #define ETH_P_IPV6	0x86DD		/* IPv6 over bluebook		*/
@@ -169,5 +171,7 @@ static inline int ieee80211_radiotap_type_to_mask(int type) {
 static inline int ieee80211_radiotap_rate_to_val(int rate) {
     return 2 * rate;
 }
+
+AWDL_PACK_POP
 
 #endif /* IEEE80211_H_ */

@@ -24,6 +24,8 @@
 
 #include "ieee80211.h"
 
+AWDL_PACK_PUSH
+
 #define AWDL_LLC_PROTOCOL_ID  0x0800
 
 #define AWDL_OUI (struct oui){{ 0x00, 0x17, 0xf2 }}
@@ -224,5 +226,7 @@ struct awdl_version_tlv {
 } AWDL_PACKED;
 
 const char *awdl_tlv_as_str(uint8_t type);
+
+AWDL_PACK_POP
 
 #endif /* AWDL_FRAME_H_ */
